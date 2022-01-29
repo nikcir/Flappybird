@@ -17,7 +17,7 @@ if d == "normal":
     mellomrom = 175
 elif d == "vanskelig":
     pipefartx = -10
-    mellomrom = 150
+    mellomrom = 155
 else:
     pipefartx = -5
     mellomrom = 200
@@ -60,7 +60,7 @@ class Spiller(pygame.sprite.Sprite):
             self.rect.y += playerfy
 
 
-class Ball(pygame.sprite.Sprite):
+class Pipe(pygame.sprite.Sprite):
     def __init__(self, x, y, fx, fy):
         pygame.sprite.Sprite.__init__(self)
         if flip == 1:
@@ -82,29 +82,29 @@ class Ball(pygame.sprite.Sprite):
         self.rect.x = width
 
 pipecy = random.randint(200,400)
-pipe1 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+pipe1 = Pipe(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
 pipegruppe1.add(pipe1)
 # 
 flip = 1
-pipe11 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+pipe11 = Pipe(width + 100,(0 - pipecy),pipefartx,0) 
 pipegruppe1.add(pipe11)
 # ###
 flip = 0
 pipecy = random.randint(200,400)
-pipe2 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+pipe2 = Pipe(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
 pipegruppe2.add(pipe2)
 # # 
 flip = 1
-pipe22 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+pipe22 = Pipe(width + 100,(0 - pipecy),pipefartx,0) 
 pipegruppe2.add(pipe22)
 #  ###
 flip = 0
 pipecy = random.randint(200,400)
-pipe3 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+pipe3 = Pipe(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
 pipegruppe3.add(pipe3)
 #  
 flip = 1
-pipe33 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+pipe33 = Pipe(width + 100,(0 - pipecy),pipefartx,0) 
 pipegruppe3.add(pipe33)
 
 
@@ -124,7 +124,7 @@ while running:
         if wait == 1:
             if trykketliste[pygame.K_UP]:
                 spiller.flyttOpp()
-                wait = 5
+                wait = 3
                 acceleration = 1
             else:
                 acceleration += 0.2
@@ -146,47 +146,47 @@ while running:
 
     a = a - pipefartx
 
-    for ball in pipegruppe1:
+    for pipe in pipegruppe1:
         if a >= 0:
-            ball.flytt()
+            pipe.flytt()
         
         if a > 900:
             pipecy = random.randint(100,500)
             flip = 0
-            pipe1 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+            pipe1 = Pipe(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
             pipegruppe1.add(pipe1)
             flip = 1
-            pipe11 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+            pipe11 = Pipe(width + 100,(0 - pipecy),pipefartx,0) 
             pipegruppe1.add(pipe11)
             a = 0
             score += 1
  
     b = b - pipefartx
-    for ball in pipegruppe2:
+    for pipe in pipegruppe2:
         if b >= 0:
-            ball.flytt()
+            pipe.flytt()
     if b > 900:
         pipecy = random.randint(100,500)
         flip = 0
-        pipe2 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+        pipe2 = Pipe(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
         pipegruppe1.add(pipe2)
         flip = 1
-        pipe22 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+        pipe22 = Pipe(width + 100,(0 - pipecy),pipefartx,0) 
         pipegruppe1.add(pipe22)
         b = 0
         score += 1
 
     c = c - pipefartx
-    for ball in pipegruppe3:
+    for pipe in pipegruppe3:
         if c >= 0:
-            ball.flytt()
+            pipe.flytt()
     if c > 900:
         pipecy = random.randint(100,500)
         flip = 0
-        pipe3 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+        pipe3 = Pipe(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
         pipegruppe1.add(pipe3)
         flip = 1
-        pipe33 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+        pipe33 = Pipe(width + 100,(0 - pipecy),pipefartx,0) 
         pipegruppe1.add(pipe33)
         c = 0
         score += 1
@@ -196,7 +196,7 @@ while running:
         if treffliste:
             print("GAME OVER")
             print("score = ",score)
-            #running = False
+            running = False
     
     pipegruppe1.update()
     pipegruppe2.update()
