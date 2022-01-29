@@ -1,0 +1,223 @@
+import pygame, math, random
+from time import sleep
+pygame.init()
+clock = pygame.time.Clock()
+d = input("vanskelighetsgrad, lett, normal vanskelig, ")
+nc = input("noclip y/n ")
+width = 800
+height = 600
+screen = pygame.display.set_mode((width, height)) 
+running = True
+flip = 0
+timeout = 40
+score = 1
+
+if d == "normal":
+    pipefartx = -6
+    mellomrom = 175
+elif d == "vanskelig":
+    pipefartx = -10
+    mellomrom = 150
+else:
+    pipefartx = -5
+    mellomrom = 200
+    
+playerfy = 6
+pipey = 527 + mellomrom
+
+pipegruppe1 = pygame.sprite.Group()
+pipegruppe2 = pygame.sprite.Group()
+pipegruppe3 = pygame.sprite.Group()
+
+
+
+spillergruppe = pygame.sprite.Group()
+
+class Spiller(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('bird.png').convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = width/2
+        self.rect.y = height/2
+    
+    def flyttOpp(self):
+        self.rect.y -= 20
+        sleep(0.01)
+        self.rect.y -= 20
+        sleep(0.01)
+        self.rect.y -= 15
+        sleep(0.01)
+        self.rect.y -= 10
+        sleep(0.01)
+        self.rect.y -= 10
+        sleep(0.01)
+        self.rect.y -= 5
+
+        
+    def flyttNed(self):
+        if timeout == 0:
+            self.rect.y += playerfy
+
+
+class Ball(pygame.sprite.Sprite):
+    def __init__(self, x, y, fx, fy):
+        pygame.sprite.Sprite.__init__(self)
+        if flip == 1:
+            self.image = pygame.transform.flip(pygame.image.load('pipe.png').convert_alpha(), False, True)
+        else:
+            self.image = pygame.image.load('pipe.png').convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.farty = fy
+        self.fartx = fx
+        
+    def flytt(self):
+        self.rect.x = self.rect.x + self.fartx
+        if self.rect.x < -100:
+            self.kill()
+        
+    def reset(self):
+        self.rect.x = width
+
+pipecy = random.randint(200,400)
+pipe1 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+pipegruppe1.add(pipe1)
+# 
+flip = 1
+pipe11 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+pipegruppe1.add(pipe11)
+# ###
+flip = 0
+pipecy = random.randint(200,400)
+pipe2 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+pipegruppe2.add(pipe2)
+# # 
+flip = 1
+pipe22 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+pipegruppe2.add(pipe22)
+#  ###
+flip = 0
+pipecy = random.randint(200,400)
+pipe3 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+pipegruppe3.add(pipe3)
+#  
+flip = 1
+pipe33 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+pipegruppe3.add(pipe33)
+
+
+a = -300
+b = -600
+c = -900
+wait = 1
+acceleration = 0.1
+ 
+spiller = Spiller()
+spillergruppe.add(spiller)
+ 
+while running:
+    
+    trykketliste = pygame.key.get_pressed()
+    if timeout == 0:
+        if wait == 1:
+            if trykketliste[pygame.K_UP]:
+                spiller.flyttOpp()
+                wait = 5
+                acceleration = 1
+            else:
+                acceleration += 0.2
+                
+                for i in range(int(acceleration)):
+                    spiller.flyttNed()
+        else:
+            wait -= 1
+    
+    if trykketliste[pygame.K_DOWN]:
+        spiller.flyttNed()
+        
+    if trykketliste[pygame.K_LEFT]:
+        spiller.flyttVenstre()
+        
+    if trykketliste[pygame.K_RIGHT]:
+        spiller.flyttHoyre()
+    
+
+    a = a - pipefartx
+
+    for ball in pipegruppe1:
+        if a >= 0:
+            ball.flytt()
+        
+        if a > 900:
+            pipecy = random.randint(100,500)
+            flip = 0
+            pipe1 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+            pipegruppe1.add(pipe1)
+            flip = 1
+            pipe11 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+            pipegruppe1.add(pipe11)
+            a = 0
+            score += 1
+ 
+    b = b - pipefartx
+    for ball in pipegruppe2:
+        if b >= 0:
+            ball.flytt()
+    if b > 900:
+        pipecy = random.randint(100,500)
+        flip = 0
+        pipe2 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+        pipegruppe1.add(pipe2)
+        flip = 1
+        pipe22 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+        pipegruppe1.add(pipe22)
+        b = 0
+        score += 1
+
+    c = c - pipefartx
+    for ball in pipegruppe3:
+        if c >= 0:
+            ball.flytt()
+    if c > 900:
+        pipecy = random.randint(100,500)
+        flip = 0
+        pipe3 = Ball(width + 100,(0 - pipecy) + pipey,pipefartx,0) 
+        pipegruppe1.add(pipe3)
+        flip = 1
+        pipe33 = Ball(width + 100,(0 - pipecy),pipefartx,0) 
+        pipegruppe1.add(pipe33)
+        c = 0
+        score += 1
+        
+    if nc != "y": 
+        treffliste = pygame.sprite.groupcollide(spillergruppe,pipegruppe1 or pipegruppe2 or pipegruppe3,True,False, pygame.sprite.collide_mask)
+        if treffliste:
+            print("GAME OVER")
+            print("score = ",score)
+            #running = False
+    
+    pipegruppe1.update()
+    pipegruppe2.update()
+    pipegruppe3.update()
+    
+    spillergruppe.update()
+    
+    screen.fill((255,255,255))
+    spillergruppe.draw(screen)
+    pipegruppe1.draw(screen)
+    pipegruppe2.draw(screen)
+    pipegruppe3.draw(screen)
+    
+    if timeout != 0:
+        timeout -= 1
+   
+    
+    clock.tick(30)
+    pygame.display.update()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+pygame.quit()
+
